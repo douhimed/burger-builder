@@ -58,6 +58,7 @@ class BurgerBuilder extends Component {
           onIncrement={this.incrementIngredientHandler}
           onDecrement={this.decrementIngredientHadler}
           disabled={disabledInfo}
+          price={this.state.price}
         />
       </Wrapper>
     );
