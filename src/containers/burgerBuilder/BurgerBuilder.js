@@ -7,7 +7,8 @@ const INGREDIENTS_PRICES = {
   salad: 1,
   bacon: 1.5,
   meat: 2.5,
-  cheese: 1.99
+  cheese: 1.99,
+  tomato: 1.5
 };
 
 class BurgerBuilder extends Component {
@@ -16,7 +17,8 @@ class BurgerBuilder extends Component {
       salad: 0,
       meat: 0,
       bacon: 0,
-      cheese: 0
+      cheese: 0,
+      tomato: 0
     },
     price: 2.99
   };
