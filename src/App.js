@@ -5,7 +5,6 @@ import Layout from "./hoc/Layout/Layout";
 import BurgerBuilder from "./containers/burgerBuilder/BurgerBuilder";
 
 class App extends Component {
-  state = {};
   render() {
     return (
       <div>
