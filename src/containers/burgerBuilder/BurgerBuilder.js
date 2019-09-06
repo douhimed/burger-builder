@@ -12,14 +12,14 @@ const INGREDIENTS_PRICES = {
   salad: 1,
   bacon: 1.5,
   meat: 2.5,
-  cheese: 1.99,
+  cheese: 2,
   tomato: 1.5
 };
 
 class BurgerBuilder extends Component {
   state = {
     ingredients: null,
-    price: 2.99,
+    price: 9.99,
     purchasable: false,
     purchasing: false,
     loading: false,
@@ -29,7 +29,13 @@ class BurgerBuilder extends Component {
   componentDidMount() {
     axios
       .get("/ingredients.json")
-      .then(resp => this.setState({ ingredients: resp.data }))
+      .then(resp => {
+        const ingredients = resp.data;
+        console.log(ingredients);
+
+        this.setState({ ingredients: ingredients });
+        this.purchasableHandler(ingredients);
+      })
       .catch(error => this.setState({ error: true }));
   }
 
@@ -42,7 +48,7 @@ class BurgerBuilder extends Component {
   };
 
   purchaseContinueHandler = () => {
-    this.setState({ loading: true });
+    /*this.setState({ loading: true });
     const order = {
       ingredients: this.state.ingredients,
       ptice: this.state.price,
@@ -61,7 +67,20 @@ class BurgerBuilder extends Component {
     axios
       .post("/orders.json", order)
       .then(resp => this.setState({ loading: false, purchasing: false }))
-      .catch(err => console.log(err));
+      .catch(err => console.log(err));*/
+    const queryParams = [];
+    for (let key in this.state.ingredients) {
+      queryParams.push(
+        encodeURIComponent(key) +
+          "=" +
+          encodeURIComponent(this.state.ingredients[key])
+      );
+    }
+    const queryString = queryParams.join("&");
+    this.props.history.push({
+      pathname: "/checkout",
+      search: "?" + queryString
+    });
   };
 
   purchasableHandler(ingredients) {
