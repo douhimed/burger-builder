@@ -2,18 +2,14 @@ import React, { Component } from "react";
 import CheckoutSummary from "../../components/Order/CheckoutSummary/CheckoutSummary";
 import { Route } from "react-router-dom";
 import ContactData from "./ContactData/ContactData";
-class Checkout extends Component {
-  constructor(props) {
-    super(props);
-    this.fetchDataFromQuery();
-  }
 
+class Checkout extends Component {
   state = {
     ingredients: null,
     price: 0
   };
 
-  fetchDataFromQuery = () => {
+  UNSAFE_componentWillMount() {
     const query = new URLSearchParams(this.props.location.search);
     const ingredients = {};
     let price = 0;
@@ -21,8 +17,8 @@ class Checkout extends Component {
       if (param[0] === "price") price = +param[1];
       else ingredients[param[0]] = +param[1];
     }
-    this.state = { ingredients: ingredients, price: price };
-  };
+    this.setState({ ingredients: ingredients, price: price });
+  }
 
   checkoutCancelledHandler = () => {
     this.props.history.goBack();
