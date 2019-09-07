@@ -2,7 +2,6 @@ import React from "react";
 import classes from "./CheckoutSummary.css";
 import Burger from "../../Burger/Burger";
 import Button from "../../UI/Button/Button";
-import { removePropertiesDeep } from "@babel/types";
 
 const checkoutSummary = props => {
   return (
