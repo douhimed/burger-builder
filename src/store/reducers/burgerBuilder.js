@@ -1,4 +1,5 @@
 import * as actionTypes from "../actions/actionTypes";
+import { updateObject } from "./../Utility";
 
 const initialState = {
   ingredients: null,
@@ -14,38 +15,42 @@ const INGREDIENTS_PRICES = {
   tomato: 1.5
 };
 
+function addIngredient(action, state) {
+  const updatedIngredient = {
+    [action.ingredientName]: state.ingredients[action.ingredientName] + 1
+  };
+  const updatedIngredients = updateObject(state.ingredients, updatedIngredient);
+  return updateObject(state, {
+    ingredients: updatedIngredients,
+    price: state.price + INGREDIENTS_PRICES[action.ingredientName]
+  });
+}
+
+function removeIngredient(action, state) {
+  const updatedIngredient = {
+    [action.ingredientName]: state.ingredients[action.ingredientName] - 1
+  };
+  const updatedIngredients = updateObject(state.ingredients, updatedIngredient);
+  return updateObject(state, {
+    ingredients: updatedIngredients,
+    price: state.price - INGREDIENTS_PRICES[action.ingredientName]
+  });
+}
+
 const burgerBuilderRducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.ADD_INGREDIENT:
-      return {
-        ...state,
-        ingredients: {
-          ...state.ingredients,
-          [action.ingredientName]: state.ingredients[action.ingredientName] + 1
-        },
-        price: state.price + INGREDIENTS_PRICES[action.ingredientName]
-      };
+      return addIngredient(action, state);
     case actionTypes.REMOVE_INGREDIENT:
-      return {
-        ...state,
-        ingredients: {
-          ...state.ingredients,
-          [action.ingredientName]: state.ingredients[action.ingredientName] - 1
-        },
-        price: state.price - INGREDIENTS_PRICES[action.ingredientName]
-      };
+      return removeIngredient(action, state);
     case actionTypes.FETCH_INGREDIENTS:
-      return {
-        ...state,
+      return updateObject(state, {
         ingredients: action.ingredients,
         error: false,
         price: 9.99
-      };
+      });
     case actionTypes.FETCH_INGREDIENTS_FAILED:
-      return {
-        ...state,
-        error: true
-      };
+      return updateObject(state, { error: true });
     default:
       return state;
   }

@@ -1,6 +1,5 @@
 import * as actionTypes from "../actions/actionTypes";
-import reducer from "./burgerBuilder";
-import { FETCH_ORDERS_START } from "./../actions/actionTypes";
+import { updateObject } from "../Utility";
 
 const initialState = {
   loading: false,
@@ -8,50 +7,31 @@ const initialState = {
   purchased: false
 };
 
+function purchaseBurgerStart(action, state) {
+  const newOrder = updateObject(action.orderData, { id: action.orderId });
+  return updateObject(state, {
+    orders: state.orders.concat(newOrder),
+    loading: false,
+    purchased: true
+  });
+}
+
 const orderReducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.PURCHASE_INIT:
-      return {
-        ...state,
-        purchased: false
-      };
+      return updateObject(state, { purchased: false });
     case actionTypes.PURCHASE_BURGER_START:
-      return {
-        ...state,
-        loading: true
-      };
+      return updateObject(state, { loading: true });
     case actionTypes.PURCHASE_BURGER_SUCCESS:
-      const newOrder = {
-        ...action.orderData,
-        id: action.orderId
-      };
-      return {
-        ...state,
-        orders: state.orders.concat(newOrder),
-        loading: false,
-        purchased: true
-      };
+      return purchaseBurgerStart(action, state);
     case actionTypes.PURCHASE_BURGER_FAIL:
-      return {
-        ...state,
-        loading: true
-      };
+      return updateObject(state, { loading: true });
     case actionTypes.FETCH_ORDERS_START:
-      return {
-        ...state,
-        loading: true
-      };
+      return updateObject(state, { loading: true });
     case actionTypes.FETCH_ORDERS_SUCCESS:
-      return {
-        ...state,
-        orders: action.orders,
-        loading: false
-      };
+      return updateObject(state, { orders: action.orders, loading: false });
     case actionTypes.FETCH_ORDERS_FAIL:
-      return {
-        ...state,
-        loading: true
-      };
+      return updateObject(state, { loading: true });
     default:
       return state;
   }
