@@ -5,6 +5,8 @@ import classes from "./Auth.css";
 import * as actions from "../../store/actions/index";
 import { connect } from "react-redux";
 import Spinner from "../../components/UI/Spinner/Spinner";
+import { Redirect } from "react-router-dom";
+import { updateObject, checkValidity } from "./../../shared/Utility";
 
 class Auth extends Component {
   state = {
@@ -43,50 +45,23 @@ class Auth extends Component {
     isSignup: true
   };
 
-  checkValidity(value, rules) {
-    let isValid = true;
-    if (!rules) {
-      return true;
+  componentDidMount() {
+    if (!this.props.buildingBurger && this.props.redirectAuthPath !== "/") {
+      this.props.onSetAuthRedirectPath();
     }
-
-    if (rules.required) {
-      isValid = value.trim() !== "" && isValid;
-    }
-
-    if (rules.minLength) {
-      isValid = value.length >= rules.minLength && isValid;
-    }
-
-    if (rules.maxLength) {
-      isValid = value.length <= rules.maxLength && isValid;
-    }
-
-    if (rules.isEmail) {
-      const pattern = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
-      isValid = pattern.test(value) && isValid;
-    }
-
-    if (rules.isNumeric) {
-      const pattern = /^\d+$/;
-      isValid = pattern.test(value) && isValid;
-    }
-
-    return isValid;
   }
 
   inputChangedHandler = (event, controlName) => {
-    const updatedControls = {
-      ...this.state.constrols,
-      [controlName]: {
-        ...this.state.constrols[controlName],
+    const updatedControls = updateObject(this.state.controles, {
+      [controlName]: updateObject(this.state.constrols[controlName], {
         value: event.target.value,
-        valid: this.checkValidity(
+        valid: checkValidity(
           event.target.value,
           this.state.constrols[controlName].validation
         ),
         touched: true
-      }
-    };
+      })
+    });
 
     this.setState({ constrols: updatedControls });
   };
@@ -142,8 +117,13 @@ class Auth extends Component {
     if (this.props.error) {
       errorMessage = <p>{this.props.error.message}</p>;
     }
+
+    let redirectAuth = null;
+    if (this.props.isAuthenticated)
+      redirectAuth = <Redirect to={this.props.redirectAuthPath} />;
     return (
       <div className={classes.Auth}>
+        {redirectAuth}
         <h2>Authenticate</h2>
         {errorMessage}
         {form}
@@ -158,14 +138,18 @@ class Auth extends Component {
 const mapStateToProps = state => {
   return {
     loading: state.auth.loading,
-    error: state.auth.error
+    error: state.auth.error,
+    isAuthenticated: state.auth.token !== null,
+    buildingBurger: state.burgerBuilder.building,
+    redirectAuthPath: state.auth.redirectAuthPath
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     onAuth: (email, password, isSignup) =>
-      dispatch(actions.auth(email, password, isSignup))
+      dispatch(actions.auth(email, password, isSignup)),
+    onSetAuthRedirectPath: () => dispatch(actions.authRedirectPath("/"))
   };
 };
 

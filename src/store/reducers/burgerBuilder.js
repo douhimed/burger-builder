@@ -1,10 +1,11 @@
 import * as actionTypes from "../actions/actionTypes";
-import { updateObject } from "./../Utility";
+import { updateObject } from "../../shared/Utility";
 
 const initialState = {
   ingredients: null,
   price: 9.99,
-  error: false
+  error: false,
+  building: false
 };
 
 const INGREDIENTS_PRICES = {
@@ -22,7 +23,8 @@ function addIngredient(action, state) {
   const updatedIngredients = updateObject(state.ingredients, updatedIngredient);
   return updateObject(state, {
     ingredients: updatedIngredients,
-    price: state.price + INGREDIENTS_PRICES[action.ingredientName]
+    price: state.price + INGREDIENTS_PRICES[action.ingredientName],
+    building: true
   });
 }
 
@@ -33,11 +35,12 @@ function removeIngredient(action, state) {
   const updatedIngredients = updateObject(state.ingredients, updatedIngredient);
   return updateObject(state, {
     ingredients: updatedIngredients,
-    price: state.price - INGREDIENTS_PRICES[action.ingredientName]
+    price: state.price - INGREDIENTS_PRICES[action.ingredientName],
+    building: true
   });
 }
 
-const burgerBuilderRducer = (state = initialState, action) => {
+const burgerBuilderReducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.ADD_INGREDIENT:
       return addIngredient(action, state);
@@ -47,7 +50,8 @@ const burgerBuilderRducer = (state = initialState, action) => {
       return updateObject(state, {
         ingredients: action.ingredients,
         error: false,
-        price: 9.99
+        price: 9.99,
+        building: false
       });
     case actionTypes.FETCH_INGREDIENTS_FAILED:
       return updateObject(state, { error: true });
@@ -56,4 +60,4 @@ const burgerBuilderRducer = (state = initialState, action) => {
   }
 };
 
-export default burgerBuilderRducer;
+export default burgerBuilderReducer;

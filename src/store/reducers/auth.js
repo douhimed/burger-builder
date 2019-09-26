@@ -1,12 +1,12 @@
 import * as actionTypes from "../actions/actionTypes";
-import { updateObject } from "../Utility";
-import { createUnzip } from "zlib";
+import { updateObject } from "../../shared/Utility";
 
 const initialState = {
   token: null,
   userId: null,
   loading: null,
-  error: null
+  error: null,
+  redirectAuthPath: "/"
 };
 
 const authReducer = (state = initialState, action) => {
@@ -24,6 +24,12 @@ const authReducer = (state = initialState, action) => {
       return updateObject(state, {
         error: action.error,
         loading: false
+      });
+    case actionTypes.AUTH_LOGOUT:
+      return updateObject(state, { token: null, userId: null });
+    case actionTypes.SET_AUTH_REDIRECT_PATH:
+      return updateObject(state, {
+        redirectAuthPath: action.path
       });
     default:
       return state;

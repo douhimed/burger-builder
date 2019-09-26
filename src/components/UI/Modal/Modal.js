@@ -4,10 +4,6 @@ import Wrapper from "../../../hoc/Wrapper/Wrapper";
 import Backdrop from "../Backdrop/Backdrop";
 
 class Modal extends Component {
-  componentDidUpdate() {
-    console.log("[Modal] did update");
-  }
-
   shouldComponentUpdate(nextProps, nextState) {
     return (
       nextProps.show !== this.props.show ||

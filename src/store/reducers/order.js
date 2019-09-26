@@ -1,5 +1,5 @@
 import * as actionTypes from "../actions/actionTypes";
-import { updateObject } from "../Utility";
+import { updateObject } from "../../shared/Utility";
 
 const initialState = {
   loading: false,
@@ -7,7 +7,7 @@ const initialState = {
   purchased: false
 };
 
-function purchaseBurgerStart(action, state) {
+function purchaseBurgerSuccess(action, state) {
   const newOrder = updateObject(action.orderData, { id: action.orderId });
   return updateObject(state, {
     orders: state.orders.concat(newOrder),
@@ -23,7 +23,7 @@ const orderReducer = (state = initialState, action) => {
     case actionTypes.PURCHASE_BURGER_START:
       return updateObject(state, { loading: true });
     case actionTypes.PURCHASE_BURGER_SUCCESS:
-      return purchaseBurgerStart(action, state);
+      return purchaseBurgerSuccess(action, state);
     case actionTypes.PURCHASE_BURGER_FAIL:
       return updateObject(state, { loading: true });
     case actionTypes.FETCH_ORDERS_START:
